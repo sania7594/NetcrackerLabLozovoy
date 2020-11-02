@@ -1,4 +1,4 @@
-package Netcracker;
+package com.netcracker.contract;
 
 import static org.junit.Assert.assertTrue;
 
