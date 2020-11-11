@@ -77,5 +77,4 @@ public class TestContract {
         repository.add(new WiredInternetContract(6, 0L, 9L, 43,
                 new Client(0, "adsdsd", "10.12.1984", "m", 1231), 43));
     }
-
 }
