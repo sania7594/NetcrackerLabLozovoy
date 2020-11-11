@@ -137,6 +137,17 @@ public class Repository<T> {
         data[secondIndex] = temp;
     }
 
+    /**
+     * Sorting method in the repository
+     * @param sorter sorter
+     * @param comparator comparator
+     * @return result
+     */
+    public Repository<T> sorted(RepositorySort sorter, Comparator<? super T> comparator) {
+        return sorter.sorted(this, 0, size, comparator);
+    }
+
+
 }
 
 
