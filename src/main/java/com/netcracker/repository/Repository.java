@@ -127,6 +127,16 @@ public class Repository<T> {
         return (T) data[index];
     }
 
+    /**
+     * @param firstIndex first index
+     * @param secondIndex secondIndex
+     */
+    public void swap(int firstIndex, int secondIndex) {
+        Object temp = data[firstIndex];
+        data[firstIndex] = data[secondIndex];
+        data[secondIndex] = temp;
+    }
+
 }
 
 
