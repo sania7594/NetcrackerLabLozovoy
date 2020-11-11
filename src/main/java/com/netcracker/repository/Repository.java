@@ -1,161 +1,173 @@
 package com.netcracker.repository;
 import com.netcracker.contract.Contract;
-
 import java.util.Comparator;
+import java.util.function.Predicate;
 
-public class Repository<T> {
-    /**
-     *declaring an array of objects
-     *The purpose of the size
+
+public class Repository {
+     /**
+     * Сreating an array of contracts
+     * The purpose of the size
      * Setting the zoom step(EXTENSION_SIZE)
      */
-    protected static final int EXTENSION_SIZE = 10;
-    protected int size;
-    protected Object[] data;
+    private static final int EXTENSION_SIZE = 10;
+    private Contract[] data = new Contract[0];
+    private int size = 0;
 
-    /**
-     *the constructor declaration
-     *specifying the size
-     *creating an array of objects of the specified size
-     */
-    public Repository(){
-        this.size=0;
-        this.data=new Object[size];
+    public Repository() {
+        this.size = 0;
+        this.data = new Contract[size];
+    }
+
+    public Repository(Contract[] anotherData) {
+        this.size = anotherData.length;
+        this.data = anotherData.clone();
     }
 
     /**
-     * creating another repository
-     * @param anotherReposytory repository
+     * Adding a contract
+     *
+     * @param contract Contract
      */
-    public Repository(Repository<T> anotherReposytory){
-        this.size=anotherReposytory.size;
-        this.data=anotherReposytory.data.clone();
-    }
-
-
-    public void add(T element){
-        if (isFull()){
+    public void add(Contract contract) {
+        if (isNotFull()) {
+            data[size] = contract;
+            size++;
+        } else {
             expand();
+            add(contract);
         }
-        data[size++]=element;
-
-    }
-
-    private boolean isFull()
-    {
-        return size>=data.length;
     }
 
     /**
-     * intermediate extension method
+     * Getting an object
+     *
+     * @param id ID
+     * @return null
      */
-    private void expand(){
-        expand(EXTENSION_SIZE);
-    }
-
-    /**
-     * Extending an array
-     * @param extensionSize extension size
-     */
-    private void expand(int extensionSize){
-        Object[] tmp=data.clone();
-        data = new Object[tmp.length + extensionSize];
-        System.arraycopy(tmp, 0, data, 0, size);
-    }
-
-    /**
-     * Inserting an element
-     * @param element element
-     * @param index index
-     */
-    public void insert(T element, int index){
-        if (index==size){
-            add(element);
-            return;
+    public Contract getById(int id) {
+        int index = indexById(id);
+        if (index != -1) {
+            return data[index];
         }
-        size++;
-        incSizeBetween(index);
-        data[index] = element;
+        return null;
     }
 
     /**
-     * @param index index
+     * remove by id
+     *
+     * @param id ID
      */
-    protected void incSizeBetween(int index) {
-        expand(1);
-        System.arraycopy(data, index, data, index + 1, size - index);
+    public void removeById(int id) {
+        int index = indexById(id);
+
+        if (index != -1) {
+            size--;
+            trim(index);
+        }
     }
 
-    /**
-     * Delete an object by index
-     * @param index the index of the element
-     * @return element
-     */
-    public T removeAt(int index) {
-        size--;
-        Object element = data[index];
-        decSizeBetween(index);
-        data[size] = null;
-
-        return (T) element;
-    }
 
     /**
-     * @param index the index of the element
+     * bubble sort
+     * @param comparator comparator
+     * @return sort data
      */
-    protected void decSizeBetween(int index) {
-        System.arraycopy(data, index + 1, data, index, size - index);
-    }
-
-    /**
-     * @param element element
-     * @return Location
-     */
-    public int indexOf(T element) {
+    public Repository sorted(Comparator<? super Contract> comparator) {
+        Contract[] sorted = data.clone();
         for (int i = 0; i < size; i++)
-            if (data[i].equals(element))
-                return i;
+            for (int j = 1; j < (size - i); j++)
+                if (comparator.compare(sorted[j - 1], sorted[j]) > 0)
+                    swap(sorted, j - 1, j);
 
-        return -1;
+        return new Repository(sorted);
+    }
+
+    /**
+     * @return size
+     */
+    public int size() {
+        return size;
     }
 
     /**
      * @param index index
-     * @return object
+     * @return output by index
      */
-    public T getByIndex(int index) {
-        return (T) data[index];
+    public Contract getByIndex(int index){
+        return data[index];
     }
 
     /**
-     * @param firstIndex first index
+     *A method for searching according to certain criteria
+     * @param predicate predicate
+     * @return repository
+     */
+    public Repository filter(Predicate<? super Contract> predicate) {
+        Repository filtered = new Repository();
+
+        for (int i = 0; i < size; i++) {
+            Contract element = data[i];
+            if (predicate.test(element))
+                filtered.add(element);
+        }
+
+        return filtered;
+    }
+
+
+    /**
+     * @param data array
+     * @param firstIndex first Index
      * @param secondIndex secondIndex
      */
-    public void swap(int firstIndex, int secondIndex) {
+    public void swap(Object[] data, int firstIndex, int secondIndex) {
         Object temp = data[firstIndex];
         data[firstIndex] = data[secondIndex];
         data[secondIndex] = temp;
     }
 
     /**
-     * Sorting method in the repository
-     * @param sorter sorter
-     * @param comparator comparator
-     * @return result
+     * @param id ID contract
+     * @return Location in the array
      */
-    public Repository<T> sorted(RepositorySort sorter, Comparator<? super T> comparator) {
-        return sorter.sorted(this, 0, size, comparator);
+    private int indexById(int id) {
+        for (int i = 0; i < size; i++) {
+            if (data[i].getId() == id) {
+                return i;
+            }
+        }
+        return -1;
+
+    }
+
+    /**
+     * @param index array's
+     */
+    private void trim(int index) {
+        int count = size - index;
+        Contract[] tmp = new Contract[size];
+        System.arraycopy(data, 0, tmp, 0, index);
+        System.arraycopy(data, index + 1, tmp, index, count);
+        data = tmp;
     }
 
 
+    /**
+     * Array extension
+     */
+    private void expand() {
+        Contract[] newData = new Contract[size + EXTENSION_SIZE];
+        System.arraycopy(data, 0, newData, 0, size);
+        data = newData;
+    }
+
+    /**
+     * Comparing the size with the length of an array
+     *
+     * @return True and False
+     */
+    private boolean isNotFull() {
+        return size < data.length;
+    }
 }
-
-
-
-
-
-
-
-
-
-
