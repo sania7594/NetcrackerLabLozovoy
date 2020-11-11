@@ -1,96 +1,140 @@
 package com.netcracker.repository;
 import com.netcracker.contract.Contract;
 
-public class Repository {
+import java.util.Comparator;
+
+public class Repository<T> {
     /**
-     * Сreating an array of contracts
-     * The purpose of the size
+     *declaring an array of objects
+     *The purpose of the size
      * Setting the zoom step(EXTENSION_SIZE)
      */
-    private Contract[] data = new Contract[0];
-    private int size = 0;
-    private static final int EXTENSION_SIZE = 10;
+    protected static final int EXTENSION_SIZE = 10;
+    protected int size;
+    protected Object[] data;
 
     /**
-     * Adding a contract
-     * @param contract Contract
+     *the constructor declaration
+     *specifying the size
+     *creating an array of objects of the specified size
      */
-    public void add(Contract contract) {
-        if (isNotFull()) {
-            data[size] = contract;
-            size++;
-        } else {
+    public Repository(){
+        this.size=0;
+        this.data=new Object[size];
+    }
+
+    /**
+     * creating another repository
+     * @param anotherReposytory repository
+     */
+    public Repository(Repository<T> anotherReposytory){
+        this.size=anotherReposytory.size;
+        this.data=anotherReposytory.data.clone();
+    }
+
+
+    public void add(T element){
+        if (isFull()){
             expand();
-            add(contract);
         }
+        data[size++]=element;
+
+    }
+
+    private boolean isFull()
+    {
+        return size>=data.length;
     }
 
     /**
-     * Getting an object
-     * @param id ID
-     * @return null
+     * intermediate extension method
      */
-    public Contract getById(int id){
-        int index=indexById(id);
-        if (index!=-1){
-            return data[index];
-        }
-        return null;
+    private void expand(){
+        expand(EXTENSION_SIZE);
     }
 
     /**
-     * remove by id
-     * @param id ID
+     * Extending an array
+     * @param extensionSize extension size
      */
-    public void removeById(int id ){
-        int index=indexById(id);
-
-        if (index!=-1){
-            size--;
-            trim(index);
-        }
+    private void expand(int extensionSize){
+        Object[] tmp=data.clone();
+        data = new Object[tmp.length + extensionSize];
+        System.arraycopy(tmp, 0, data, 0, size);
     }
 
     /**
-     * @param id ID contract
-     * @return  Location in the array
+     * Inserting an element
+     * @param element element
+     * @param index index
      */
-    private int indexById(int id){
-        for (int i=0; i<size; i++) {
-            if (data[i].getId() == id) {
+    public void insert(T element, int index){
+        if (index==size){
+            add(element);
+            return;
+        }
+        size++;
+        incSizeBetween(index);
+        data[index] = element;
+    }
+
+    /**
+     * @param index index
+     */
+    protected void incSizeBetween(int index) {
+        expand(1);
+        System.arraycopy(data, index, data, index + 1, size - index);
+    }
+
+    /**
+     * Delete an object by index
+     * @param index the index of the element
+     * @return element
+     */
+    public T removeAt(int index) {
+        size--;
+        Object element = data[index];
+        decSizeBetween(index);
+        data[size] = null;
+
+        return (T) element;
+    }
+
+    /**
+     * @param index the index of the element
+     */
+    protected void decSizeBetween(int index) {
+        System.arraycopy(data, index + 1, data, index, size - index);
+    }
+
+    /**
+     * @param element element
+     * @return Location
+     */
+    public int indexOf(T element) {
+        for (int i = 0; i < size; i++)
+            if (data[i].equals(element))
                 return i;
-            }
-        }
+
         return -1;
-
     }
 
     /**
-     * @param index array's
+     * @param index index
+     * @return object
      */
-    private void trim(int index) {
-        int count = size - index;
-        Contract[] tmp = new Contract[size];
-        System.arraycopy(data, 0, tmp, 0, index);
-        System.arraycopy(data, index + 1, tmp, index, count);
-        data=tmp;
+    public T getByIndex(int index) {
+        return (T) data[index];
     }
 
-
-    /**
-     * Array extension
-     */
-    private void expand() {
-        Contract[] newData = new Contract[size + EXTENSION_SIZE];
-        System.arraycopy(data, 0, newData, 0, size);
-        data = newData;
-    }
-
-    /**
-     * Comparing the size with the length of an array
-     * @return True and False
-     */
-    private boolean isNotFull() {
-        return size < data.length;
-    }
 }
+
+
+
+
+
+
+
+
+
+
