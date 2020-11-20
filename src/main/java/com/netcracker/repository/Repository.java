@@ -1,3 +1,4 @@
+
 package com.netcracker.repository;
 import com.netcracker.contract.Contract;
 import java.util.Comparator;
@@ -5,7 +6,7 @@ import java.util.function.Predicate;
 
 
 public class Repository {
-     /**
+    /**
      * Сreating an array of contracts
      * The purpose of the size
      * Setting the zoom step(EXTENSION_SIZE)
@@ -67,20 +68,13 @@ public class Repository {
         }
     }
 
-
     /**
-     * bubble sort
+     * @param sorter sorter
      * @param comparator comparator
-     * @return sort data
+     * @return sorted
      */
-    public Repository sorted(Comparator<? super Contract> comparator) {
-        Contract[] sorted = data.clone();
-        for (int i = 0; i < size; i++)
-            for (int j = 1; j < (size - i); j++)
-                if (comparator.compare(sorted[j - 1], sorted[j]) > 0)
-                    swap(sorted, j - 1, j);
-
-        return new Repository(sorted);
+    public Repository sorted(ISorter sorter, Comparator<? super Contract> comparator) {
+        return sorter.sorted(this,0,size,comparator);
     }
 
     /**
@@ -117,12 +111,11 @@ public class Repository {
 
 
     /**
-     * @param data array
      * @param firstIndex first Index
      * @param secondIndex secondIndex
      */
-    public void swap(Object[] data, int firstIndex, int secondIndex) {
-        Object temp = data[firstIndex];
+    public void swap(int firstIndex, int secondIndex) {
+        Contract temp = data[firstIndex];
         data[firstIndex] = data[secondIndex];
         data[secondIndex] = temp;
     }
