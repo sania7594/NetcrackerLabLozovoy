@@ -1,9 +1,11 @@
 package com.netcracker.contract;
 
+import com.netcracker.parse.CSVParser;
 import com.netcracker.repository.Repository;
 import com.netcracker.repository.SorterFactory;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Comparator;
 
 import static org.junit.Assert.*;
@@ -85,6 +87,15 @@ public class TestContract {
 
         assertEquals(5, (int) sorted.getByIndex(1).getId());
         assertEquals(4, (int) sorted.getByIndex(0).getId());
+    }
+    @Test
+    /**
+     * Parsing and adding data
+     */
+    public void testParserCSV() throws IOException {
+        Repository repository=new Repository();
+        CSVParser.readArr(repository);
+        assertNotNull(repository.getById(1));
     }
 
 
