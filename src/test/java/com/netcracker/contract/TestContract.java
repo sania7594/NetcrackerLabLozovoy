@@ -95,7 +95,8 @@ public class TestContract {
     public void testParserCSV() throws IOException {
         Repository repository=new Repository();
         CSVParser.readArr(repository);
-        assertNotNull(repository.getById(1));
+        assertNotNull(repository.getById(3));
+
     }
 
 

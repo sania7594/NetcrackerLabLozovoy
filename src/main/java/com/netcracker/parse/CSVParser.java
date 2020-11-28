@@ -6,6 +6,8 @@ import com.netcracker.contract.MobileContract;
 import com.netcracker.contract.WiredInternetContract;
 import com.netcracker.repository.Repository;
 import java.io.*;
+import java.util.ArrayList;
+
 /**
  * Class for parsing a csv file and transmitting data to the repositor.
  *
@@ -23,6 +25,7 @@ public class CSVParser{
         FileReader fileReader = new FileReader(file);
         BufferedReader reader = new BufferedReader(fileReader);
         int j=0;
+        ArrayList<Integer> checkId=new  ArrayList<Integer>();
         String line="";
         while (true){
             line=reader.readLine();
@@ -39,9 +42,8 @@ public class CSVParser{
             }
 
         String[] extra=sources[sources.length-1].split(";");
-        Client clientNew= new Client(Integer.parseInt(sources[4]), sources[5], sources[6], sources[7],
-                Integer.parseInt(sources[8]));
-
+        Integer idClient=Integer.parseInt(sources[4]);
+        Client  clientNew=checkIdClient(checkId, idClient, sources);
         switch (sources[9]){
             case "tv":
                 repository.add(new DigitalTv(Integer.parseInt(sources[0]),
@@ -65,4 +67,24 @@ public class CSVParser{
 
     }
 }
+
+    /**
+     * @param checkId array list check id
+     * @param idClient  id client
+     * @param sources sorces
+     * @return client new and 0
+     */
+    public static Client checkIdClient(ArrayList<Integer> checkId, Integer idClient, String[] sources){
+        if (checkId.contains(idClient)){
+            Client clientNew= new Client(0, "0", "0", "0",
+                     0);
+            return clientNew;
+            }
+        else{
+            checkId.add(idClient);
+            Client clientNew= new Client(Integer.parseInt(sources[4]), sources[5], sources[6], sources[7],
+                    Integer.parseInt(sources[8]));
+            return clientNew;
+        }
+    }
 }
