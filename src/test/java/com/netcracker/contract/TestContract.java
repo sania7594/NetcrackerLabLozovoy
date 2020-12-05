@@ -3,6 +3,8 @@ package com.netcracker.contract;
 import com.netcracker.parse.CSVParser;
 import com.netcracker.repository.Repository;
 import com.netcracker.repository.SorterFactory;
+import com.netcracker.validators.Message;
+import com.netcracker.validators.Status;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -95,7 +97,9 @@ public class TestContract {
     public void testParserCSV() throws IOException {
         Repository repository=new Repository();
         CSVParser.readArr(repository);
-        assertNotNull(repository.getById(3));
+        assertNotNull(repository.getById(2));
+        assertNull(repository.getById(0));
+        assertEquals(1,repository.size());
 
     }
 
@@ -105,11 +109,21 @@ public class TestContract {
      * adding data to the repository
      */
     public void fill(Repository repository) {
-        repository.add(new DigitalTv(4, 0L, 9L, 43,
+        repository.add(new DigitalTv(4, 0L, 9L, 4,
                 new Client(0, "adsdsd", "10.12.1984", "m", 1231), 43));
         repository.add(new MobileContract(5, 1L, 9L, 33,
                 new Client(1, "fsdfsd", "11.12.1986", "m", 1271), 43, 12, 12));
         repository.add(new WiredInternetContract(6, 0L, 9L, 43,
                 new Client(0, "adsdsd", "10.12.1984", "m", 1231), 43));
     }
+
+    @Test
+    public void testChet(){
+        Repository repository=new Repository();
+        fill(repository);
+        assertEquals(0,(repository.getByIndex(0).getId() % 2));
+        assertNotEquals(0,(repository.getByIndex(1).getId() % 2));
+    }
+
 }
+

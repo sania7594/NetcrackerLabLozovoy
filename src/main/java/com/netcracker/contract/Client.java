@@ -1,5 +1,7 @@
 package com.netcracker.contract;
 
+import com.opencsv.bean.CsvBindByName;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -10,11 +12,28 @@ import java.time.format.DateTimeFormatter;
  * @author Alex Lozovoy
  */
 public class Client {
+    public int getId() {
+        return id;
+    }
+
     private int id;
     private String fullName;
     private String birthday;
+
+    public String getSex() {
+        return sex;
+    }
+
     private String sex;
     private int seriesNumber;
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
     /**
      * Constructor for creating a client

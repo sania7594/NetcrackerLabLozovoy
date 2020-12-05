@@ -1,12 +1,14 @@
 package com.netcracker.parse;
 
-import com.netcracker.contract.Client;
-import com.netcracker.contract.DigitalTv;
-import com.netcracker.contract.MobileContract;
-import com.netcracker.contract.WiredInternetContract;
+import com.netcracker.contract.*;
 import com.netcracker.repository.Repository;
+import com.netcracker.validators.*;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class for parsing a csv file and transmitting data to the repositor.
@@ -15,6 +17,7 @@ import java.util.ArrayList;
  */
 
 public class CSVParser{
+    private final static HashMap<Integer,Client>  clients=new HashMap<>();
 
     /**
      * @param repository repository
@@ -25,7 +28,6 @@ public class CSVParser{
         FileReader fileReader = new FileReader(file);
         BufferedReader reader = new BufferedReader(fileReader);
         int j=0;
-        ArrayList<Integer> checkId=new  ArrayList<Integer>();
         String line="";
         while (true){
             line=reader.readLine();
@@ -43,25 +45,67 @@ public class CSVParser{
 
         String[] extra=sources[sources.length-1].split(";");
         Integer idClient=Integer.parseInt(sources[4]);
-        Client  clientNew=checkIdClient(checkId, idClient, sources);
+        Client  clientNew=checkIdClient(idClient, sources);
         switch (sources[9]){
             case "tv":
-                repository.add(new DigitalTv(Integer.parseInt(sources[0]),
+                Contract contract=new DigitalTv((Integer.parseInt(sources[0])),
                         Long.parseLong(sources[1]),Long.parseLong(sources[2]),Integer.parseInt(sources[3]),
-                                clientNew, Integer.parseInt(extra[0]))
-                        );
+                        clientNew, Integer.parseInt(extra[0]));
+                int errorCount=0;
+                for (Message dovalidation: doValidation(contract)){
+                    if (dovalidation.getStatus()==Status.ERROR){
+                        //new Message("Fatal error",Status.ERROR);
+                        System.out.println(dovalidation.getMessage());
+                        errorCount++;
+                    }
+                    else{
+
+                    }
+
+                }
+                if (errorCount==0){
+                    repository.add(contract);
+                }
                 break;
             case "internet":
-                repository.add(new WiredInternetContract(Integer.parseInt(sources[0]),
+                Contract contractInternet=new WiredInternetContract(Integer.parseInt(sources[0]),
                         Long.parseLong(sources[1]),Long.parseLong(sources[2]),Integer.parseInt(sources[3]),
-                        clientNew, Float.parseFloat(extra[0]))
-                );
+                        clientNew, Float.parseFloat(extra[0]));
+                int errorCount2=0;
+                for (Message dovalidation: doValidation(contractInternet)){
+                    if (dovalidation.getStatus()==Status.ERROR){
+                        //new Message("Fatal error",Status.ERROR);
+                        System.out.println(dovalidation.getMessage());
+                        errorCount2++;
+                    }
+                    else{
+
+                    }
+
+                }
+                if (errorCount2==0){
+                    repository.add(contractInternet);
+                }
                 break;
             case "mobile":
-                repository.add(new MobileContract(Integer.parseInt(sources[0]),
+                Contract contractMobile=new MobileContract(Integer.parseInt(sources[0]),
                         Long.parseLong(sources[1]),Long.parseLong(sources[2]),Integer.parseInt(sources[3]),
                         clientNew, Integer.parseInt(extra[0]),Integer.parseInt(extra[1]),
-                        Integer.parseInt(extra[2])));
+                        Integer.parseInt(extra[2]));
+                int errorCount3=0;
+                for (Message dovalidation: doValidation(contractMobile)){
+                    if (dovalidation.getStatus()==Status.ERROR){
+                        System.out.println(dovalidation.getMessage());
+                        errorCount3++;
+                    }
+                    else{
+
+                    }
+
+                }
+                if (errorCount3==0){
+                    repository.add(contractMobile);
+                }
                 break;
         }
 
@@ -69,22 +113,31 @@ public class CSVParser{
 }
 
     /**
-     * @param checkId array list check id
      * @param idClient  id client
      * @param sources sorces
      * @return client new and 0
      */
-    public static Client checkIdClient(ArrayList<Integer> checkId, Integer idClient, String[] sources){
-        if (checkId.contains(idClient)){
-            Client clientNew= new Client(0, "0", "0", "0",
-                     0);
-            return clientNew;
+    public static Client checkIdClient( Integer idClient, String[] sources){
+        Client  client=clients.get(idClient);
+        if (client != null){
+            return client;
             }
         else{
-            checkId.add(idClient);
             Client clientNew= new Client(Integer.parseInt(sources[4]), sources[5], sources[6], sources[7],
                     Integer.parseInt(sources[8]));
+            clients.put(clientNew.getId(), clientNew);
             return clientNew;
         }
     }
+
+    private static List<Validator> validators=new ArrayList<>();
+        static{
+            validators.add(new Validator<Contract>(0, Contract::getId,(e,a)->e==a%2));
+            validators.add(new Validator<Contract>("w",contract->contract.getClient().getSex(),String::equals));
+            //validators.add(new ValidatorParity());
+        }
+
+    private static List<Message> doValidation(Contract contract){
+           return validators.stream().map(v->v.validate(contract)).collect(Collectors.toList());
+        }
 }
