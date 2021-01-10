@@ -1,28 +1,33 @@
 package com.netcracker.repository;
+/*
+@author Lozovoy
+@version 1.0
+class factory sorter
 
-/**
- * The class sorter factory
- *
- * @author Alex Lozovoy
  */
 
 public class SorterFactory {
-    protected static ISorter sorter, bubleSorter;
+    protected static ISorter sorter, bubbleSorter;
 
-    private SorterFactory(){}
+    private SorterFactory() {}
 
+    /**
+     * @return result quick sorter
+     */
     public static ISorter getSorter() {
         if (sorter == null)
-            sorter = new QuickSorted();
+            sorter = new QuickSorter();
 
         return sorter;
     }
 
-    public static ISorter getBubleSorter(){
-        if (bubleSorter==null)
-            bubleSorter=new BubleSorter();
+    /**
+     * @return result bubble sorter
+     */
+    public static ISorter getBubbleSorter() {
+        if (bubbleSorter == null)
+            bubbleSorter = new BubbleSorter();
 
-        return bubleSorter;
+        return bubbleSorter;
     }
 }
-

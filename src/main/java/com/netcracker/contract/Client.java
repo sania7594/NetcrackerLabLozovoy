@@ -1,68 +1,76 @@
 package com.netcracker.contract;
 
-import com.opencsv.bean.CsvBindByName;
+import com.netcracker.repository.DateConverter;
+/*
+@author Lozovoy
+@version 2.0
+class Client
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-
-/**
- * Client creation class
- *
- * @author Alex Lozovoy
  */
+
 public class Client {
-    public int getId() {
+    private final Integer id;
+    private final String fullName;
+    private final Long birthday;
+    private final Gender sex;
+    private final Integer passportSeries, passportNumber;
+
+    /**
+     * @param id id
+     * @param fullName fullname
+     * @param birthday birthday
+     * @param sex sex
+     * @param passportSeries password series
+     * @param passportNumber password number
+     */
+    public Client(
+            Integer id,
+            String fullName,
+            Long birthday,
+            Gender sex,
+            Integer passportSeries,
+            Integer passportNumber
+    ) {
+        this.id = id;
+        this.fullName = fullName;
+        this.birthday = birthday;
+        this.sex = sex;
+        this.passportSeries = passportSeries;
+        this.passportNumber = passportNumber;
+    }
+
+    public int getAge() {
+        return DateConverter.getAge(birthday);
+    }
+
+    public Integer getId() {
         return id;
     }
-
-    private int id;
-    private String fullName;
-    private String birthday;
-
-    public String getSex() {
-        return sex;
-    }
-
-    private String sex;
-    private int seriesNumber;
 
     public String getFullName() {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public Long getBirthday() {
+        return birthday;
     }
 
-    /**
-     * Constructor for creating a client
-     *
-     * @param id           ID client
-     * @param fullName     Full client
-     * @param birthday     birthday client
-     * @param sex          sex clinet
-     * @param serialNumber Passport series and number
-     */
-    public Client(int id, String fullName, String birthday, String sex, int serialNumber) {
-        this.id = id;
-        this.fullName = fullName;
-        this.birthday = birthday;
-        this.sex = sex;
-        this.seriesNumber = serialNumber;
+    public Gender getSex() {
+        return sex;
     }
 
-    /**
-     * Сalculating the age of a person
-     *
-     * @return age of the person
-     */
-    public int getAge() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate startDate = LocalDate.now();
-        LocalDate endDate = LocalDate.parse(birthday, formatter);
-        Period period = Period.between(endDate, startDate);
-        return period.getYears();
+    public Integer getPassportSeries() {
+        return passportSeries;
     }
 
+    public Integer getPassportNumber() {
+        return passportNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Client{" + "id=" + id + ", fullName='" + fullName + '\'' + ", birthday=" + birthday +
+                ", sex=" + sex + ", passportSeries=" + passportSeries + ", passportNumber=" + passportNumber +
+                '}';
+    }
 }

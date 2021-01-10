@@ -1,80 +1,30 @@
-
 package com.netcracker.repository;
-import com.netcracker.contract.Contract;
+
 import java.util.Comparator;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
+/*
+@author Lozovoy
+@version 2.0
+class repository
 
-public class Repository {
-    /**
-     * Сreating an array of contracts
-     * The purpose of the size
-     * Setting the zoom step(EXTENSION_SIZE)
-     */
-    private static final int EXTENSION_SIZE = 10;
-    private Contract[] data = new Contract[0];
-    private int size = 0;
+ */
+
+public class Repository<T> {
+    protected static final int EXTENSION_SIZE = 10;
+
+    protected int size;
+    protected Object[] data;
 
     public Repository() {
         this.size = 0;
-        this.data = new Contract[size];
+        this.data = new Object[size];
     }
 
-    public Repository(Contract[] anotherData) {
-        this.size = anotherData.length;
-        this.data = anotherData.clone();
-    }
-
-    /**
-     * Adding a contract
-     *
-     * @param contract Contract
-     */
-    public void add(Contract contract) {
-        if (isNotFull()) {
-            data[size] = contract;
-            size++;
-        } else {
-            expand();
-            add(contract);
-        }
-    }
-
-    /**
-     * Getting an object
-     *
-     * @param id ID
-     * @return null
-     */
-    public Contract getById(int id) {
-        int index = indexById(id);
-        if (index != -1) {
-            return data[index];
-        }
-        return null;
-    }
-
-    /**
-     * remove by id
-     *
-     * @param id ID
-     */
-    public void removeById(int id) {
-        int index = indexById(id);
-
-        if (index != -1) {
-            size--;
-            trim(index);
-        }
-    }
-
-    /**
-     * @param sorter sorter
-     * @param comparator comparator
-     * @return sorted
-     */
-    public Repository sorted(ISorter sorter, Comparator<? super Contract> comparator) {
-        return sorter.sorted(this,0,size,comparator);
+    public Repository(Repository<T> anotherAdapter) {
+        this.size = anotherAdapter.size;
+        this.data = anotherAdapter.data.clone();
     }
 
     /**
@@ -85,23 +35,119 @@ public class Repository {
     }
 
     /**
-     * @param index index
-     * @return output by index
+     * @param element element
      */
-    public Contract getByIndex(int index){
-        return data[index];
+    public void add(T element) {
+        if (isFull())
+            expand();
+
+        data[size++] = element;
     }
 
     /**
-     *A method for searching according to certain criteria
-     * @param predicate predicate
-     * @return repository
+     * @return result checks
      */
-    public Repository filter(Predicate<? super Contract> predicate) {
-        Repository filtered = new Repository();
+    protected boolean isFull() {
+        return size >= data.length;
+    }
+
+    protected void expand() {
+        expand(EXTENSION_SIZE);
+    }
+
+    /**
+     * @param extensionSize extension size
+     */
+    protected void expand(int extensionSize) {
+        Object[] tmp = data.clone();
+        data = new Object[tmp.length + extensionSize];
+        System.arraycopy(tmp, 0, data, 0, size);
+    }
+
+    /**
+     * @param element element
+     * @param index index
+     */
+    public void insert(T element, int index) {
+        if (index == size) {
+            add(element);
+            return;
+        }
+
+        checkBounds(index);
+
+        size++;
+        incSizeBetween(index);
+        data[index] = element;
+    }
+
+    /**
+     * @param index index
+     */
+    protected void checkBounds(int index) {
+        if (index >= size || index < 0)
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+    }
+
+    /**
+     * @param index index
+     */
+    protected void incSizeBetween(int index) {
+        expand(1);
+        System.arraycopy(data, index, data, index + 1, size - index);
+    }
+
+    /**
+     * @param index index
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public T removeAt(int index) {
+        checkBounds(index);
+
+        size--;
+        Object element = data[index];
+        decSizeBetween(index);
+        data[size] = null;
+
+        return (T) element;
+    }
+
+    /**
+     * @param index index
+     */
+    protected void decSizeBetween(int index) {
+        System.arraycopy(data, index + 1, data, index, size - index);
+    }
+
+    public int indexOf(T element) {
+        for (int i = 0; i < size; i++)
+            if (data[i].equals(element))
+                return i;
+
+        return -1;
+    }
+
+    public boolean contains(T element) {
+        return indexOf(element) != -1;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T getByIndex(int index) {
+        checkBounds(index);
+
+        return (T) data[index];
+    }
+
+    /**
+     * @param predicate predicate
+     * @return result search
+     */
+    public Repository<T> filter(Predicate<? super T> predicate) {
+        Repository<T> filtered = new Repository<>();
 
         for (int i = 0; i < size; i++) {
-            Contract element = data[i];
+            T element = getByIndex(i);
             if (predicate.test(element))
                 filtered.add(element);
         }
@@ -109,58 +155,44 @@ public class Repository {
         return filtered;
     }
 
+    /**
+     * @param sorter sorter
+     * @param comparator comparator
+     * @return result sorter
+     */
+    public Repository<T> sorted(ISorter sorter, Comparator<? super T> comparator) {
+        return sorter.sorted(this, 0, size, comparator);
+    }
+
+    public <E> Repository<E> map(Function<? super T, E> mapper) {
+        Repository<E> mapped = new Repository<>();
+
+        for (int i = 0; i < size; i++)
+            mapped.add(mapper.apply(getByIndex(i)));
+
+        return mapped;
+    }
 
     /**
-     * @param firstIndex first Index
-     * @param secondIndex secondIndex
+     * @param firstIndex first index
+     * @param secondIndex second index
      */
     public void swap(int firstIndex, int secondIndex) {
-        Contract temp = data[firstIndex];
+        checkBounds(firstIndex);
+        checkBounds(secondIndex);
+
+        Object temp = data[firstIndex];
         data[firstIndex] = data[secondIndex];
         data[secondIndex] = temp;
     }
 
-    /**
-     * @param id ID contract
-     * @return Location in the array
-     */
-    private int indexById(int id) {
-        for (int i = 0; i < size; i++) {
-            if (data[i].getId() == id) {
-                return i;
-            }
+    @Override
+    public Repository<T> clone() {
+        try {
+            super.clone();
+        } catch (Exception ignored) {
         }
-        return -1;
 
-    }
-
-    /**
-     * @param index array's
-     */
-    private void trim(int index) {
-        int count = size - index;
-        Contract[] tmp = new Contract[size];
-        System.arraycopy(data, 0, tmp, 0, index);
-        System.arraycopy(data, index + 1, tmp, index, count);
-        data = tmp;
-    }
-
-
-    /**
-     * Array extension
-     */
-    private void expand() {
-        Contract[] newData = new Contract[size + EXTENSION_SIZE];
-        System.arraycopy(data, 0, newData, 0, size);
-        data = newData;
-    }
-
-    /**
-     * Comparing the size with the length of an array
-     *
-     * @return True and False
-     */
-    private boolean isNotFull() {
-        return size < data.length;
+        return new Repository<>(this);
     }
 }

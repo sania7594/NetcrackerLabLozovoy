@@ -1,72 +1,49 @@
 package com.netcracker.contract;
 
-/**
- * The class contract
- *
- * @author Alex Lozovoy
+/*
+@author Lozovoy
+@version 2.0
+class Contract
+
  */
+
 public class Contract {
-    private int id;
-    private long startOfContract;
-    private long endOfContract;
-    private int numberContract;
-    private Client client;
+    private final Integer id;
+    private final Long startDate, endDate;
+    private final Client client;
 
     /**
-     * Constructor for creating a contract
-     *
-     * @param id              ID contract
-     * @param startOfContract Contract start date
-     * @param endOfContract   The end date of the contract
-     * @param numberContract  Number contract
-     * @param client          Client
+     * @param id id
+     * @param startDate start date
+     * @param endDate endDate end date
+     * @param client client
      */
-    public Contract(int id, long startOfContract, long endOfContract, int numberContract, Client client) {
+    public Contract(Integer id, Long startDate, Long endDate, Client client) {
         this.id = id;
-        this.startOfContract = startOfContract;
-        this.endOfContract = endOfContract;
-        this.numberContract = numberContract;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.client = client;
     }
 
-    /**
-     * Returning the contract Id
-     *
-     * @return id contract
-     */
-    public int getId() {
+    public Integer getId() {
         return id;
     }
-    /**
-     * Returning tContract start date
-     *
-     * @return start date contract
-     */
-    public long getStartOfContract() {
-        return startOfContract;
+
+    public Long getStartDate() {
+        return startDate;
     }
-    /**
-     * Returning end date of the contract
-     *
-     * @return start date contract
-     */
-    public long getEndOfContract() {
-        return endOfContract;
+
+    public Long getEndDate() {
+        return endDate;
     }
-    /**
-     * Returning Number contract
-     *
-     * @return start date contract
-     */
-    public int getNumberContract() {
-        return numberContract;
-    }
-    /**
-     * Returning client
-     *
-     * @return start date contract
-     */
+
     public Client getClient() {
         return client;
+    }
+
+    @Override
+    public String toString() {
+        return "Contract{" + "id=" + id + ", startDate=" + startDate + ", endDate=" + endDate + ", client=" +
+                client + '}';
     }
 }

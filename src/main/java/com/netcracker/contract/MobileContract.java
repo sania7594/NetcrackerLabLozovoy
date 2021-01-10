@@ -1,30 +1,41 @@
 package com.netcracker.contract;
+/*
+@author Lozovoy
+@version 2.0
+class mobile contract
 
-/**
- * Mobile phone contract
- *
- * @author Alex Lozovoy
  */
-
 public class MobileContract extends Contract {
-    private int minutes;
-    private int messages;
-    private int trafic;
+    private final Integer minutes, sms, gb;
 
     /**
-     * @param id             ID
-     * @param startDate      Contract start date
-     * @param endDate        The end date of the contract
-     * @param numberContract Number contract
-     * @param client         Client
-     * @param minutes        minutes
-     * @param messages       messages
-     * @param trafic         trafic
+     * @param minutes minutes
+     * @param sms sms
+     * @param gb gb
+     * @param id id
+     * @param startDate start date
+     * @param endDate end date
+     * @param client client
      */
-    public MobileContract(int id, long startDate, long endDate, int numberContract, Client client, int minutes, int messages, int trafic) {
-        super(id, startDate, endDate, numberContract, client);
+    public MobileContract(
+            Integer minutes, Integer sms, Integer gb, Integer id, Long startDate, Long endDate, Client client
+    ) {
+        super(id, startDate, endDate, client);
+
         this.minutes = minutes;
-        this.messages = messages;
-        this.trafic = trafic;
+        this.sms = sms;
+        this.gb = gb;
+    }
+
+    public Integer getMinutes() {
+        return minutes;
+    }
+
+    public Integer getSms() {
+        return sms;
+    }
+
+    public Integer getGb() {
+        return gb;
     }
 }

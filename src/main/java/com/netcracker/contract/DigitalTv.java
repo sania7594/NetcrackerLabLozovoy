@@ -1,24 +1,28 @@
 package com.netcracker.contract;
+/*
+@author Lozovoy
+@version 2.0
+class Tv
 
-/**
- * A contract for digital TV
- *
- * @author Alex Lozovoy
  */
 
 public class DigitalTv extends Contract {
-    private int channelPackage;
+    private final TVPackage tvPackage;
 
     /**
-     * @param id             ID
-     * @param startDate      Contract start date
-     * @param endDate        The end date of the contract
-     * @param numberContract Number contract
-     * @param client         Client
-     * @param channelPackage Channel package
+     * @param tvPackage tv package
+     * @param id id
+     * @param startDate start date
+     * @param endDate end date
+     * @param client client
      */
-    public DigitalTv(int id, long startDate, long endDate, int numberContract, Client client, int channelPackage) {
-        super(id, startDate, endDate, numberContract, client);
-        this.channelPackage = channelPackage;
+    public DigitalTv(TVPackage tvPackage, Integer id, Long startDate, Long endDate, Client client) {
+        super(id, startDate, endDate, client);
+
+        this.tvPackage = tvPackage;
+    }
+
+    public TVPackage getTvPackage() {
+        return tvPackage;
     }
 }
