@@ -1,7 +1,0 @@
-id, startDate, endDate, numberContract, idClient, fullName, birthday, sex, seriesNumber, typeContract, informContract
-1,  0,        9,      1,              1,        sdfsdfs,  11.12.1986, m, 1231,         tv,            43
-2,  1,        8,      2,              2,        sdfdsa,   12.01.1932, w, 2131,         mobile,        32;12;12
-3,  2,        6,      3,              1,        sdfsdfs,  11.12.1986, m, 1231,         internet,      43
-4,  3,        4,      4,              4,        sdfssxz,  11.12.1996, m, 1271,         tv,            45
-5,  4,        5,      5,              5,        sdfdsz,   12.01.1972, w, 2931,         mobile,        33;15;16
-6,  5,        6,      6,              6,        sddsdsc,  11.07.1982, m, 2551,         internet,      46
