@@ -7,6 +7,14 @@ package contract;
  */
 
 public class DigitalTv extends Contract {
+    public int getChannelPackage() {
+        return channelPackage;
+    }
+
+    public void setChannelPackage(int channelPackage) {
+        this.channelPackage = channelPackage;
+    }
+
     private int channelPackage;
 
     /**
@@ -21,4 +29,6 @@ public class DigitalTv extends Contract {
         super(id, startDate, endDate, numberContract, client);
         this.channelPackage = channelPackage;
     }
+
+
 }

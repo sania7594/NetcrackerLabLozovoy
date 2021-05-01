@@ -1,0 +1,20 @@
+CREATE TABLE public.client_contract
+(
+    id bigint,
+    start_date bigint,
+    end_date bigint,
+    number_contract bigint,
+    client_id bigint,
+    full_name character varying,
+    birthday character varying,
+    sex character varying,
+    serial_number bigint,
+    speed real,
+    minutes bigint,
+    messages bigint,
+    trafic bigint,
+    channel_package bigint
+);
+
+ALTER TABLE public.client_contract
+    OWNER to postgres;

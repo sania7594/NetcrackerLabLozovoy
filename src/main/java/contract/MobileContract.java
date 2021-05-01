@@ -27,4 +27,28 @@ public class MobileContract extends Contract {
         this.messages = messages;
         this.trafic = trafic;
     }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(int minutes) {
+        this.minutes = minutes;
+    }
+
+    public int getMessages() {
+        return messages;
+    }
+
+    public void setMessages(int messages) {
+        this.messages = messages;
+    }
+
+    public int getTrafic() {
+        return trafic;
+    }
+
+    public void setTrafic(int trafic) {
+        this.trafic = trafic;
+    }
 }

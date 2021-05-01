@@ -22,4 +22,11 @@ public class WiredInternetContract extends Contract {
         this.speed = speed;
     }
 
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
 }

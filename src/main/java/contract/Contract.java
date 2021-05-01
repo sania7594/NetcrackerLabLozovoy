@@ -73,4 +73,6 @@ public class Contract {
     public Client getClient() {
         return client;
     }
+
+
 }
