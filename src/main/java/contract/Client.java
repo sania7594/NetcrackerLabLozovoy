@@ -42,6 +42,7 @@ public class Client {
         this.seriesNumber = serialNumber;
     }
 
+
     public Client(){
 
     }
