@@ -1,5 +1,8 @@
 package contract;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -9,14 +12,17 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Alex Lozovoy
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Client {
+    @XmlElement(name = "id")
     private int id;
+    @XmlElement(name = "fullName")
     private String fullName;
-
+    @XmlElement(name = "birthday")
     private String birthday;
+    @XmlElement(name = "sex")
     private String sex;
-
-
+    @XmlElement(name = "seriesNumber")
     private int seriesNumber;
 
     /**
@@ -34,6 +40,10 @@ public class Client {
         this.birthday = birthday;
         this.sex = sex;
         this.seriesNumber = serialNumber;
+    }
+
+    public Client(){
+
     }
 
     public int getId() {

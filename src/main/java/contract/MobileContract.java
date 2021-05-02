@@ -1,14 +1,22 @@
 package contract;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Mobile phone contract
  *
  * @author Alex Lozovoy
  */
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MobileContract extends Contract {
+    @XmlElement(name = "minutes")
     private int minutes;
+    @XmlElement(name = "messages")
     private int messages;
+    @XmlElement(name = "trafic")
     private int trafic;
 
     /**
@@ -26,6 +34,10 @@ public class MobileContract extends Contract {
         this.minutes = minutes;
         this.messages = messages;
         this.trafic = trafic;
+    }
+
+    public MobileContract(){
+        super();
     }
 
     public int getMinutes() {

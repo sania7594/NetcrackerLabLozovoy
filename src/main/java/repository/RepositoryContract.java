@@ -3,21 +3,31 @@ package repository;
 import contract.Contract;
 import injector.AutoInjectable;
 
+import javax.xml.bind.annotation.*;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
-
+@XmlRootElement(name = "repository")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RepositoryContract {
     /**
      * Сreating an array of contracts
      * The purpose of the size
      * Setting the zoom step(EXTENSION_SIZE)
      */
+    @XmlTransient
     private static final int EXTENSION_SIZE = 10;
+
+    @XmlElementWrapper(name = "repos_contracts")
+    @XmlElement(name = "contract")
     private Contract[] data = new Contract[0];
+
+    @XmlTransient
     private int size = 0;
 
     @AutoInjectable
+    @XmlTransient
     private ISorter sorter;
 
     public RepositoryContract() {
@@ -188,5 +198,14 @@ public class RepositoryContract {
 
     public ISorter getSorter() {
         return sorter;
+    }
+
+    @Override
+    public String toString() {
+        return "RepositoryContract{" +
+                "data=" + Arrays.toString(data) +
+                ", size=" + size +
+                ", sorter=" + sorter +
+                '}';
     }
 }

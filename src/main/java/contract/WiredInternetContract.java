@@ -6,7 +6,13 @@ package contract;
  * @author Alex Lozovoy
  */
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class WiredInternetContract extends Contract {
+    @XmlElement(name = "speed")
     private float speed;
 
     /**
@@ -20,6 +26,10 @@ public class WiredInternetContract extends Contract {
     public WiredInternetContract(int id, long startDate, long endDate, int numberContract, Client client, float speed) {
         super(id, startDate, endDate, numberContract, client);
         this.speed = speed;
+    }
+
+    public WiredInternetContract(){
+        super();
     }
 
     public float getSpeed() {

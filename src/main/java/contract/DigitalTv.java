@@ -1,20 +1,18 @@
 package contract;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * A contract for digital TV
  *
  * @author Alex Lozovoy
  */
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DigitalTv extends Contract {
-    public int getChannelPackage() {
-        return channelPackage;
-    }
-
-    public void setChannelPackage(int channelPackage) {
-        this.channelPackage = channelPackage;
-    }
-
+    @XmlElement(name = "channelPack")
     private int channelPackage;
 
     /**
@@ -27,6 +25,18 @@ public class DigitalTv extends Contract {
      */
     public DigitalTv(int id, long startDate, long endDate, int numberContract, Client client, int channelPackage) {
         super(id, startDate, endDate, numberContract, client);
+        this.channelPackage = channelPackage;
+    }
+
+    public DigitalTv(){
+        super();
+    }
+
+    public int getChannelPackage() {
+        return channelPackage;
+    }
+
+    public void setChannelPackage(int channelPackage) {
         this.channelPackage = channelPackage;
     }
 

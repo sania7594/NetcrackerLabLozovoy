@@ -1,15 +1,25 @@
 package contract;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * The class contract
  *
  * @author Alex Lozovoy
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Contract {
+    @XmlElement(name = "id")
     private int id;
+    @XmlElement(name = "startOfContract")
     private long startOfContract;
+    @XmlElement(name = "endOfContract")
     private long endOfContract;
+    @XmlElement(name = "numberContract")
     private int numberContract;
+    @XmlElement(name = "client")
     private Client client;
 
     /**
@@ -27,6 +37,10 @@ public class Contract {
         this.endOfContract = endOfContract;
         this.numberContract = numberContract;
         this.client = client;
+    }
+
+    public Contract() {
+
     }
 
     /**
